@@ -6,21 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <RelativeLayout
-        android:background="#A07F7F"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_dragLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-        <TextView
-            android:text="我是内容"
-            android:layout_centerInParent="true"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </RelativeLayout>
-
+        android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
 </com.mahao.customview.DragLayout>
