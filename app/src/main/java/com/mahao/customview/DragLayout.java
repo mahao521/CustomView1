@@ -25,6 +25,7 @@ public class DragLayout extends RelativeLayout {
     public AVLoadingIndicatorView headerVisiableLoadView;
     ViewDragHelper mDragHelper;
     boolean skipLayout = false;
+
     public DragLayout(Context context) {
         this(context, null);
     }
@@ -88,34 +89,39 @@ public class DragLayout extends RelativeLayout {
         } else {
             skipLayout = false;
             Log.d(TAG, "onLayout: " + headerView.getTop() + " " + contentView.getTop());
-        //    footView.layout(0, getMeasuredHeight(), footView.getMeasuredWidth(), getMeasuredHeight() + footView.getMeasuredHeight());
+            footView.layout(0, footView.getTop(), footView.getMeasuredWidth(), getMeasuredHeight() + footView.getBottom());
             headerView.layout(0, headerView.getTop(), headerView.getMeasuredWidth(), headerView.getBottom());
             contentView.layout(0, contentView.getTop(), contentView.getMeasuredWidth(), contentView.getBottom());
         }
     }
 
+    float initY = 0f;
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean interceptFlag = mDragHelper.shouldInterceptTouchEvent(ev);
-        boolean canScrollUp = false, canScroolDown;
-        if (contentView instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) contentView;
-            canScrollUp = recyclerView.canScrollVertically(-1);
-            boolean b = recyclerView.canScrollVertically(1);
-            Log.d(TAG, "onInterceptTouchEvent: down " + b);
-             Log.d(TAG, "onInterceptTouchEvent:  up " + canScrollUp);
-            if (canScrollUp) {
-                boolean interceptTouchEvent = super.onInterceptTouchEvent(ev);
-                Log.d(TAG, "onInterceptTouchEvent: =========== " + interceptTouchEvent);
-                if(b == false){
-            //        return interceptFlag;
-                }
-                return false;
-            }
-
-
+        boolean canScrollUp = contentView.canScrollVertically(-1);
+        boolean canScrollDown = contentView.canScrollVertically(1);
+        Log.d(TAG, "onInterceptTouchEvent: down " + canScrollDown + " up = " + canScrollUp);
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                initY = ev.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float currY = ev.getY();
+                //foot的多点触摸时候，强制拦截事件给viewDraghelper处理
+                if (currY - initY < 0 && !canScrollDown && Math.abs(currY - initY) > mDragHelper.getTouchSlop() && !interceptFlag) {
+                    Log.d(TAG, "onInterceptTouchEvent: --------- " + interceptFlag);
+                    return true;
+                } /*else if (currY - initY > 0 && canScrollUp && Math.abs(currY - initY) > mDragHelper.getTouchSlop()) { //footer
+                    Log.d(TAG, "onInterceptTouchEvent: ++++++++" + interceptFlag);
+                    return interceptFlag;
+                } else if (canScrollUp && Math.abs(currY - initY) > mDragHelper.getTouchSlop()) {
+                    return false;
+                }*/
+                break;
         }
+        Log.d(TAG, "onInterceptTouchEvent: " + interceptFlag);
         return interceptFlag;
     }
 
@@ -142,18 +148,34 @@ public class DragLayout extends RelativeLayout {
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
-            headerView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
-                    , MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-            int finalTop = top;
-            if (dy > 0) {
-                finalTop = (int) (finalTop - dy * dampingRatio(top));
-                Log.d(TAG, "clampViewPositionVertical: " + finalTop + " " + top + " " + (dampingRatio(top)));
+            boolean up = child.canScrollVertically(-1);
+            boolean down = child.canScrollVertically(1);
+            Log.d(TAG, "clampViewPositionVertical: " + up + " " + down + "   " + dy + " " + top);
+            if (up == false && down == true) {
+                int finalTop = top;
+                if (dy > 0) {
+                    finalTop = (int) (finalTop - dy * dampingRatio(top, headerView.getMeasuredHeight()));
+                    //  Log.d(TAG, "clampViewPositionVertical: " + finalTop + " " + top + " " + (dampingRatio(top)));
+                }
+                Log.d(TAG, "clampViewPositionVertical:  0    ");
+                return Math.min(headerView.getMeasuredHeight(), Math.max(0, finalTop));
+            } else if (up && !down) {
+                int finalTop = top;
+                if (dy < 0) {
+                    //   finalTop = (int) (finalTop + dy * dampingRatio(top,footView.getMeasuredHeight()));
+                    //   Log.d(TAG, "clampViewPositionVertical: " + finalTop + " " + top + " " + (dampingRatio(top)));
+                }
+                int max = Math.max(-footView.getMeasuredHeight(), Math.min(0, finalTop));
+                Log.d(TAG, "clampViewPositionVertical:  1  " + max + " " + top);
+                return max;
+            } else {
+                Log.d(TAG, "clampViewPositionVertical:  2   ");
+                return child.getTop();
             }
-            return Math.min(headerView.getMeasuredHeight(), Math.max(0, finalTop));
         }
 
-        public float dampingRatio(int top) {
-            float diffRatio = top * 1.0f / headerView.getMeasuredHeight();
+        public float dampingRatio(int top, int totalHeight) {
+            float diffRatio = top * 1.0f / totalHeight;
             return diffRatio;
         }
 
@@ -161,16 +183,15 @@ public class DragLayout extends RelativeLayout {
         public void onViewCaptured(View capturedChild, int activePointerId) {
             Log.d(TAG, "onViewCaptured: ");
             super.onViewCaptured(capturedChild, activePointerId);
-            removeCallbacks(mRunnable);
+            removeCallbacks(mHeaderRunnable);
         }
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
             ViewCompat.offsetTopAndBottom(headerView, dy);
-          //  ViewCompat.offsetTopAndBottom(footView,-dy);
-            Log.d(TAG, "onViewPositionChanged: " + changedView.getTop() +" " + changedView.getBottom());
-            float ratio = dampingRatio(changedView.getTop());
+            ViewCompat.offsetTopAndBottom(footView, dy);
+            Log.d(TAG, "onViewPositionChanged: " + changedView.getTop() + " " + changedView.getBottom());
             // headerVisiable.setScaleX(1 + ratio * 0.5f);
             //  headerVisiable.setScaleY(1 + ratio * 2);
             Log.d(TAG, "onViewPositionChanged: " + top + "  1 " + dy);
@@ -185,10 +206,15 @@ public class DragLayout extends RelativeLayout {
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            Log.d(TAG, "onViewReleased: " + yvel);
             if (contentView.getTop() >= headerVisiable.getMeasuredHeight()) {
                 Log.d(TAG, "onViewReleased: " + headerVisiable.getMeasuredHeight());
                 mDragHelper.smoothSlideViewTo(releasedChild, 0, headerVisiable.getMeasuredHeight());
-            } else if (contentView.getTop() < headerVisiable.getMeasuredHeight()) {
+            } else if (contentView.getTop() > 0 && contentView.getTop() < headerVisiable.getMeasuredHeight()) {
+                mDragHelper.smoothSlideViewTo(releasedChild, 0, 0);
+            } else if (contentView.getTop() < 0 && contentView.getTop() < -footView.getMeasuredHeight() / 2) {
+                mDragHelper.smoothSlideViewTo(releasedChild, 0, -footView.getMeasuredHeight());
+            } else if (contentView.getTop() > -footView.getMeasuredHeight() / 2) {
                 mDragHelper.smoothSlideViewTo(releasedChild, 0, 0);
             }
             invalidate();
@@ -203,17 +229,18 @@ public class DragLayout extends RelativeLayout {
         @Override
         public void onViewDragStateChanged(int state) {
             Log.d(TAG, "onViewDragStateChanged: " + contentView.getTop() + "..." + headerVisiable.getMeasuredHeight());
-            Log.d(TAG, "onViewDragStateChanged: " + state);
             if (state == ViewDragHelper.STATE_IDLE && contentView.getTop() == headerVisiable.getMeasuredHeight()) {
                 skipLayout = true;
                 headerVisiableLoadView.setVisibility(View.VISIBLE);
                 headerVisiableLoadView.show();
-                postDelayed(mRunnable, 3000);
+                postDelayed(mHeaderRunnable, 2000);
+            } else if (state == ViewDragHelper.STATE_IDLE && contentView.getTop() == -footView.getMeasuredHeight()) {
+                postDelayed(mHeaderRunnable, 2000);
             }
         }
     }
 
-    private final Runnable mRunnable = new Runnable() {
+    private final Runnable mHeaderRunnable = new Runnable() {
         @Override
         public void run() {
             mDragHelper.smoothSlideViewTo(contentView, 0, 0);
