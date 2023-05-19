@@ -1,0 +1,100 @@
+package com.mahao.customview.test;
+
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * <? extends Number>表示上边界限定，泛型参数只能是Number及其子类，一旦实例化其他参数类型则会报错
+ * <? super Number>表示下边界限定，泛型参数只能是Number和它的父类。
+ */
+public class TestSuper {
+    private static final String TAG = "test_super";
+
+    interface MyClolor {
+
+    }
+
+    static class Food implements MyClolor {
+    }
+
+    static class Fruit extends Food {
+    }
+
+    class Meat extends Food {
+    }
+
+    static class Apple extends Fruit {
+    }
+
+    static class Banana extends Fruit {
+    }
+
+    static class RedApple extends Apple {
+    }
+
+    class GreenApple extends Apple {
+    }
+
+    static class Plete<T> {
+
+        private T item;
+
+        Plete(T item) {
+            this.item = item;
+        }
+
+        T getItem() {
+            return item;
+        }
+
+        void setItem(T item) {
+            this.item = item;
+        }
+    }
+
+    public static void main(String[] args) {
+        test();
+    }
+
+
+    public static void test() {
+        Plete<? super Fruit> plete = new Plete<>(new Fruit());
+        plete.setItem(new RedApple());
+        // plete.setItem(new Food()); error
+        Object item = plete.getItem();  // 只能add 不能 get
+        Plete<? extends Fruit> plete1 = new Plete<>(new Apple());
+        //plete1.setItem(new Food());
+        //plete1.setItem(new RedApple());
+        Fruit item1 = plete1.getItem();  // 只能get  不能add
+        boolean b = item1 instanceof Apple;
+
+        List<MyClolor> listColor = new ArrayList<>();
+        listColor.add(new Food());
+        test1(listColor, listColor);
+
+        List<Banana> listBana = new ArrayList<>();
+        listBana.add(new Banana());
+        //   test1(listBana,listBana);
+
+    }
+
+    public static void test1(List<? extends MyClolor> list1, List<? super Fruit> list2) {
+        for (int i = 0; i < list1.size(); i++) {
+            MyClolor myClolor = list1.get(i);
+            if (myClolor instanceof Fruit) {
+                list2.add((Fruit) myClolor);
+            }
+            Log.d(TAG, "test1: " + list1.get(i));
+        }
+        list2.add(new Apple());
+        list2.add(new Banana());
+        // list2.add(new Food());
+        //   list1.add(new Food());
+    }
+
+
+}
+
+
+

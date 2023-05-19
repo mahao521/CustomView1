@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".rxjava.RxjavaActivity">
+
+    <Button
+        android:id="@+id/btn_rx_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="flowable"
+        app:layout_constraintBottom_toTopOf="@+id/btn_rx_2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_rx_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="observable"
+        app:layout_constraintBottom_toTopOf="@+id/btn_rx_3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_rx_1" />
+
+    <Button
+        android:id="@+id/btn_rx_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="single"
+        app:layout_constraintBottom_toTopOf="@+id/btn_rx_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_rx_2" />
+
+    <Button
+        android:id="@+id/btn_rx_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="maybe"
+        app:layout_constraintBottom_toTopOf="@+id/btn_rx_5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_rx_3" />
+
+    <Button
+        android:id="@+id/btn_rx_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Completable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_rx_4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mahao.customview">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -9,13 +13,112 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CustomView">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".okhttp.RetrofitActivity"
+            android:exported="false" />
+        <activity
+            android:name=".okhttp.OkHttpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activitylife.LifeSecondActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activitylife.LifeMainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".drawable.Draw1Activity"
+            android:exported="false"
+            android:theme="@style/Theme.Drawable" />
+        <activity
+            android:name=".drawable.DrawableActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Drawable" />
+        <activity
+            android:name=".rxjava.RxjavaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".binder.BinderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".multiwindow.ItemActivity"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="com.mahao.customview.ExampleWindowInitializer"
+                android:value="androidx.startup" />
+        </provider>
+
+        <activity
+            android:name=".multiwindow.DetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".multiwindow.ListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".dispatch.DispatchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fragment.viewpager2.TestViewPagerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fragment.viewpager2.TestViewPager2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".fragment.FragmentContainerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fragment.MainFragmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.TransLateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.ViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".appbarlayout.AppbarLayout2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".viewbind.ViewBindImplActivity"
+            android:exported="false" />
+        <activity
+            android:name=".viewbind.ViewBindActivity"
+            android:exported="false" />
+        <activity
+            android:name=".recycler.GridViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".recycler.RecyclerViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".appbarlayout.AppBarLayoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".constainlayout.ConstraintLayoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CustomViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".binder.PersonService"
+            android:process=":remote" />
+        <service android:name=".binder.interfaces.PersonService1" />
     </application>
 
 </manifest>

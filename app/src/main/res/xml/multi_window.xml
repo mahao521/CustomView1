@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:window="http://schemas.android.com/apk/res-auto">
+
+    <SplitPairRule
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
+        window:splitMinWidth="300dp"
+        window:splitRatio="0.3">
+        <SplitPairFilter
+            window:primaryActivityName="com.mahao.customview.multiwindow.ListActivity"
+            window:secondaryActivityName="com.mahao.customview.multiwindow.DetailActivity" />
+
+        <SplitPairFilter
+            window:primaryActivityName="*"
+            window:secondaryActivityAction="android.intent.action.VIEW"
+            window:secondaryActivityName="*/*" />
+    </SplitPairRule>
+
+
+    <SplitPairRule
+        window:finishPrimaryWithSecondary="always"
+        window:finishSecondaryWithPrimary="always"
+        window:splitMinWidth="300dp"
+        window:splitRatio="0.5">
+        <SplitPairFilter
+            window:primaryActivityName="com.mahao.customview.multiwindow.DetailActivity"
+            window:secondaryActivityName="com.mahao.customview.multiwindow.ItemActivity" />
+    </SplitPairRule>
+
+    <ActivityRule
+        window:alwaysExpand="true">
+        <ActivityFilter
+            window:activityName="com.mahao.customview.multiwindow.ItemActivity"/>
+    </ActivityRule>
+
+
+    <!-- Automatically launch a placeholder for the list activity. -->
+    <!--   <SplitPlaceholderRule
+           window:placeholderActivityName=".SplitActivityListPlaceholder"
+           window:splitMinWidth="600dp"
+           window:splitRatio="0.3">
+           <ActivityFilter window:activityName=".SplitActivityList" />
+       </SplitPlaceholderRule>-->
+
+
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mahao.customview.dispatch.FirstGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/first_group"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".dispatch.DispatchActivity">
+
+    <com.mahao.customview.dispatch.MyView
+        android:id="@+id/my_view"
+        android:minHeight="300dp"
+        android:minWidth="300dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"></com.mahao.customview.dispatch.MyView>
+
+    <com.mahao.customview.dispatch.SecondViewGroup
+        android:id="@+id/second_group"
+        android:minHeight="300dp"
+        android:minWidth="300dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"></com.mahao.customview.dispatch.SecondViewGroup>
+
+    <Button
+        android:text="按钮"
+        android:id="@+id/btn_dispatch"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+
+</com.mahao.customview.dispatch.FirstGroup>

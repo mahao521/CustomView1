@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.MainFragmentActivity">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="切换" />
+
+        <Button
+            android:id="@+id/btn_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="容器" />
+
+        <Button
+            android:id="@+id/btn_save_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="保存数据" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <!--   <fragment
+           android:layout_below="@+id/ll_control"
+           android:id="@+id/fragment_one"
+           android:name="com.mahao.customview.fragment.OneFragment"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:tag="fragment_one" />
+
+       <fragment
+           android:layout_below="@+id/ll_control"
+           android:id="@+id/fragment_two"
+           android:name="com.mahao.customview.fragment.TwoFragment"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:tag="fragment_two" />
+
+       <fragment
+           android:layout_below="@+id/ll_control"
+           android:id="@+id/fragment_three"
+           android:name="com.mahao.customview.fragment.ThreeFragment"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:tag="fragment_three" />-->
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_stack"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_control"
+        android:background="#8788" >
+
+ <!--       <TextView
+            android:id="@+id/bg_fragment_container"
+            android:textSize="18sp"
+            android:text="我是背景哦"
+            android:tag="com.mahao.customview.fragment.TwoFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>-->
+
+    </androidx.fragment.app.FragmentContainerView>
+
+</RelativeLayout>

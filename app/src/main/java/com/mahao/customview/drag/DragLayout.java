@@ -1,4 +1,4 @@
-package com.mahao.customview;
+package com.mahao.customview.drag;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,9 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.mahao.customview.R;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.customview.widget.ViewDragHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DragLayout extends RelativeLayout {
+public class DragLayout extends ViewGroup {
 
     private static final String TAG = "DragLayout";
     public int defaultHeader = R.layout.default_header;
@@ -74,8 +76,30 @@ public class DragLayout extends RelativeLayout {
             measureChild(getChildAt(i), widthMeasureSpec, heightMeasureSpec);
             Log.d(TAG, "onMeasure: " + getChildAt(i).getMeasuredWidth() + " height " + getChildAt(i).getMeasuredHeight());
         }
-        int width = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY);
-        int height = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.EXACTLY);
+        int modeW = MeasureSpec.getMode(widthMeasureSpec);
+        int modeH = MeasureSpec.getMode(heightMeasureSpec);
+        int sizeW = MeasureSpec.getSize(widthMeasureSpec);
+        int sizeH = MeasureSpec.getSize(heightMeasureSpec);
+        Log.d(TAG, "onMeasure: " + sizeW +"  ------- " + sizeH);
+        int finalSizeH = 0;
+        int finalSizeW = 0;
+        if(modeH == MeasureSpec.EXACTLY){
+            finalSizeH = sizeH;
+        }else if(modeH == MeasureSpec.AT_MOST){
+            finalSizeH = contentView.getMeasuredHeight();
+        }else {
+            finalSizeH = 0;
+        }
+        if(modeW == MeasureSpec.EXACTLY){
+            finalSizeW = sizeW;
+        }else if(modeW == MeasureSpec.AT_MOST){
+            finalSizeW = contentView.getMeasuredHeight();
+        }else {
+            finalSizeW = 0;
+        }
+        Log.d(TAG, "onMeasure: " + finalSizeW +" " + finalSizeH);
+        int width = MeasureSpec.makeMeasureSpec(finalSizeW, widthMeasureSpec);
+        int height = MeasureSpec.makeMeasureSpec(finalSizeH, heightMeasureSpec);
         setMeasuredDimension(width, height);
     }
 
@@ -109,7 +133,7 @@ public class DragLayout extends RelativeLayout {
                 break;
             case MotionEvent.ACTION_MOVE:
                 float currY = ev.getY();
-                //foot的多点触摸时候，强制拦截事件给viewDraghelper处理
+                //footer的多点触摸时候，强制拦截事件给viewDraghelper处理
                 if (currY - initY < 0 && !canScrollDown && Math.abs(currY - initY) > mDragHelper.getTouchSlop() && !interceptFlag) {
                     Log.d(TAG, "onInterceptTouchEvent: --------- " + interceptFlag);
                     return true;
@@ -146,12 +170,13 @@ public class DragLayout extends RelativeLayout {
             return headerView.getMeasuredHeight();
         }
 
+
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             boolean up = child.canScrollVertically(-1);
             boolean down = child.canScrollVertically(1);
             Log.d(TAG, "clampViewPositionVertical: " + up + " " + down + "   " + dy + " " + top);
-            if (up == false && down == true) {
+            if (up == false && down == true ||( !up && !down)) {
                 int finalTop = top;
                 if (dy > 0) {
                     finalTop = (int) (finalTop - dy * dampingRatio(top, headerView.getMeasuredHeight()));
@@ -168,8 +193,8 @@ public class DragLayout extends RelativeLayout {
                 int max = Math.max(-footView.getMeasuredHeight(), Math.min(0, finalTop));
                 Log.d(TAG, "clampViewPositionVertical:  1  " + max + " " + top);
                 return max;
-            } else {
-                Log.d(TAG, "clampViewPositionVertical:  2   ");
+            }else {
+                Log.d(TAG, "clampViewPositionVertical: 3  ");
                 return child.getTop();
             }
         }
@@ -192,13 +217,9 @@ public class DragLayout extends RelativeLayout {
             ViewCompat.offsetTopAndBottom(headerView, dy);
             ViewCompat.offsetTopAndBottom(footView, dy);
             Log.d(TAG, "onViewPositionChanged: " + changedView.getTop() + " " + changedView.getBottom());
-            // headerVisiable.setScaleX(1 + ratio * 0.5f);
-            //  headerVisiable.setScaleY(1 + ratio * 2);
             Log.d(TAG, "onViewPositionChanged: " + top + "  1 " + dy);
             if (top == headerVisiable.getMeasuredHeight() && dy < 0) {
                 Log.d(TAG, "onViewPositionChanged: " + top + " " + dy);
-                //  headerVisiable.setScaleX(1);
-                //   headerVisiable.setScaleY(1);
                 skipLayout = true;
                 headerVisiableLoadView.show();
             }

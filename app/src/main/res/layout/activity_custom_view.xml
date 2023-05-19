@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mahao.customview.widget.MyLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".CustomViewActivity">
+
+    <HorizontalScrollView
+        android:id="@+id/hsv"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#ff9"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/ll_children"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="我是文本1" />
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="我是文本2" />
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="我是文本3" />
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="我是文本3" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_below="@id/custom_layout"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/custon_layout_2"
+            app:cardBackgroundColor="#0f0"
+            app:cardCornerRadius="5px"
+            app:cardElevation="10px"
+            app:cardMaxElevation="10px"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true">
+
+
+        </androidx.cardview.widget.CardView>
+
+        <com.mahao.customview.widget.CustomLayout
+            android:id="@+id/custon_layout_2"
+            android:layout_width="190dp"
+            android:layout_height="190dp"
+            android:layout_below="@id/custom_layout"
+            android:layout_marginTop="10dp"
+            android:background="#0ff" />
+
+        <com.mahao.customview.widget.CustomLayout
+            android:id="@+id/custom_layout"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:background="#9f8">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:background="#346"
+                android:gravity="center"
+                android:text="生活啊，房子啊"
+                android:textColor="#065"
+                android:textSize="18sp" />
+
+        </com.mahao.customview.widget.CustomLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#689"
+        android:lineSpacingMultiplier="1.5"
+        android:padding="10dp"
+        android:text="父和子决定该child测量模式是Wrap,但是View大小是parentSize,而TextView有处理wrap_content的size"
+        android:textColor="#000"
+        android:textSize="18sp" />
+
+    <com.mahao.customview.widget.CustomView
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        android:background="#0f0" />
+
+</com.mahao.customview.widget.MyLinearLayout>

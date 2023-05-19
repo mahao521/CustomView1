@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/root_view"
+    android:background="@color/white_2"
+    tools:context=".drawable.DrawableActivity">
+
+    <ImageView
+        android:scaleType="matrix"
+        android:id="@+id/iv_full_screen"
+        tools:src="@drawable/img_kaiping_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:text="减小imageView高度"
+        android:id="@+id/btn_add_height"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"/>
+
+
+</RelativeLayout>
