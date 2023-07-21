@@ -2,6 +2,7 @@ package com.mahao.customview.okhttp
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,14 +18,17 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
+import retrofit2.http.Url
 import java.io.File
 import java.io.IOException
 import java.lang.reflect.Method
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 class OkHttpActivity : AppCompatActivity() {
@@ -88,6 +92,8 @@ class OkHttpActivity : AppCompatActivity() {
             mutableMap.put("areaCode", "530700");
             mutableMap.put("date", "20230509");
             mutableMap.put("need3HourForcast", "1");
+            var url: HttpUrl? = URL.toHttpUrlOrNull()
+            url?.newBuilder()?.addQueryParameter("area", "丽江")
             var request = Request.Builder()
                 .get()
                 .header("Authorization", "APPCODE " + APP_CODE)
@@ -105,8 +111,8 @@ class OkHttpActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: " + string)
             it.onNext(string);
             it.onComplete()
-         /*   var formBody = FormBody.Builder().add("mahao", "23").add("lisi", "24").build()
-            request.newBuilder().post(formBody)*/
+            /*   var formBody = FormBody.Builder().add("mahao", "23").add("lisi", "24").build()
+               request.newBuilder().post(formBody)*/
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

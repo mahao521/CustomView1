@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
       <module name="CustomView.app" target="17" />
+      <module name="CustomView.glidemodule" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

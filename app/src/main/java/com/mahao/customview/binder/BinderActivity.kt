@@ -80,7 +80,12 @@ class BinderActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(myConn!!)
-        unbindService(conn1)
+        if(myConn != null){
+            unbindService(myConn!!)
+        }
+       if(conn1 != null){
+           unbindService(conn1)
+       }
+
     }
 }

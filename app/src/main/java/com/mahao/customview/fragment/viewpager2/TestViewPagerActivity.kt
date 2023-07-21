@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.mahao.customview.R
-import com.mahao.customview.widget.CpHyRecyclerViewLayout
 import com.mahao.customview.widget.VerticalViewPager
 
 class TestViewPagerActivity : AppCompatActivity() {
@@ -35,14 +34,14 @@ class TestViewPagerActivity : AppCompatActivity() {
         if (viewpagerDataList == null) {
             viewpagerDataList = mutableListOf();
         }
-        for (index in 0 until 10) {
+       /* for (index in 0 until 10) {
            var cpLayout =  CpHyRecyclerViewLayout(this)
             var recyclerView = cpLayout.getRecyclerView()
             recyclerView?.layoutManager =
                 LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             recyclerView?.adapter = RvAdapter()
             viewpagerDataList?.add(cpLayout)
-        }
+        }*/
 
     }
 

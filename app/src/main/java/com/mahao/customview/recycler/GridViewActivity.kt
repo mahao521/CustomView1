@@ -46,7 +46,7 @@ class GridViewActivity : AppCompatActivity(), View.OnClickListener {
             animator.duration = 3000
             animator.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onAnimationEnd(p0: Animator) {
@@ -54,11 +54,11 @@ class GridViewActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 override fun onAnimationCancel(p0: Animator) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onAnimationRepeat(p0: Animator) {
-                    TODO("Not yet implemented")
+
                 }
 
 

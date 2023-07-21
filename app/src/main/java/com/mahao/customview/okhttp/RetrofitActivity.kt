@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.JsonObject
 import com.mahao.customview.R
 import com.mahao.customview.okhttp.RetrofitActivity.Companion.APP_CODE
+import com.mahao.customview.okhttp.convert.GsonConverterFactory
+import io.reactivex.Observable
+import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
 import okhttp3.Dispatcher
@@ -23,6 +27,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import java.io.File
+import java.util.Objects
+import java.util.Observer
 import java.util.concurrent.Executors
 
 class RetrofitActivity : AppCompatActivity() {
@@ -37,7 +43,7 @@ class RetrofitActivity : AppCompatActivity() {
 
     }
 
-   lateinit var file: File
+    lateinit var file: File
 
 
     private var tvContent: TextView? = null
@@ -131,7 +137,7 @@ class RetrofitActivity : AppCompatActivity() {
         /*.subscribe {
                 tvContent.setText(it.getShowapi_res_body().getCityInfo().toString())
             }*/
-        getNetWork1()
+        getNetWork2()
     }
 
     fun getNetWork1() {
@@ -152,8 +158,8 @@ class RetrofitActivity : AppCompatActivity() {
             }).cache(Cache(file, 10 * 1024 * 1024))
             .build()
         var retrofit = Retrofit.Builder().baseUrl(RetrofitActivity.BASE_URL)
-            //  .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addConverterFactory(GsonConverterFactory.create())
+            //   .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .client(okHttpClient)
             //异步结果返回的线程。就是enqueue的caback所在线程，默认主线程。
             .callbackExecutor(Executors.newCachedThreadPool())
@@ -168,19 +174,64 @@ class RetrofitActivity : AppCompatActivity() {
                 "date" to "20200319",
                 "need3HourForcast" to "1"
             )
-        ).enqueue(object : Callback<DateBean> {
+        ).enqueue(object : Callback<JsonObject> {
             override fun onResponse(
-                call: Call<DateBean>,
-                response: retrofit2.Response<DateBean>
+                call: Call<JsonObject>,
+                response: retrofit2.Response<JsonObject>
             ) {
-                Log.d(TAG, "onResponse: enqueue数据返回线程 " + Thread.currentThread().name)
-                var body = response.body()
-                tvContent?.setText(response.body()?.toString())
+                Log.d(TAG, "onResponse: enqueue数据返回线程 " + Thread.currentThread().name + " ")
+                //   var body = response.body()
+                tvContent?.setText("" + response.body()?.toString())
             }
 
-            override fun onFailure(call: Call<DateBean>, t: Throwable) {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                TODO("Not yet implemented")
             }
+
         })
+    }
+
+
+    fun getNetWork2() {
+        Log.d(TAG, "getNetWork1: 方法调用 " + Thread.currentThread().name)
+        val executorService = Executors.newCachedThreadPool();
+        var okHttpClient = OkHttpClient.Builder().dispatcher(Dispatcher(executorService))
+            .addInterceptor label@{
+                Log.d(TAG, "getNetWork1:  数据请求发起线程  " + Thread.currentThread().name)
+                return@label it.proceed(it.request())
+            }
+            .addNetworkInterceptor(object : Interceptor {
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    Log.d(TAG, "intercept: ------进行了网络请求" + Thread.currentThread().name)
+                    var request = chain.request()
+                    Log.d(TAG, "intercept: " + request.toString())
+                    return chain.proceed(request)
+                }
+            }).cache(Cache(file, 10 * 1024 * 1024))
+            .build()
+        var retrofit = Retrofit.Builder().baseUrl(RetrofitActivity.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(okHttpClient)
+            //异步结果返回的线程。就是enqueue的caback所在线程，默认主线程。
+            .callbackExecutor(Executors.newCachedThreadPool())
+            .build()
+        // retrofit.callFactory().newCall()
+        var service = retrofit.create(Service::class.java)
+        service.getDate4(
+            path = "area-to-weather-date",
+            map = mutableMapOf<String, String>(
+                "area" to "丽江",
+                "areaCode" to "530700",
+                "date" to "20200319",
+                "need3HourForcast" to "1"
+            )
+        ).observeOn(Schedulers.newThread()).subscribe {
+            Log.d(TAG, "onResponse: exec数据返回线程 " + Thread.currentThread().name + " ")
+            //   var body = response.body()
+            var aa = AA()
+            tvContent?.setText("" + it.toString())
+        }
     }
 }
 
@@ -241,7 +292,18 @@ interface Service {
     fun getDate3(
         @Path("path") path: String,
         @QueryMap() map: MutableMap<String, String>
-    ): Call<DateBean>
+    ): Call<JsonObject>
+
+
+    @Headers(
+        "Cache-Control: max-age=640000, max-stale=864000",
+        "Authorization: APPCODE " + APP_CODE,
+    )
+    @GET("/{path}")
+    fun getDate4(
+        @Path("path") path: String,
+        @QueryMap() map: MutableMap<String, String>
+    ): Observable<Any>
 
 
     /*  */

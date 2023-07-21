@@ -1,6 +1,8 @@
 package com.mahao.customview;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.google.android.material.dialog.InsetDialogOnTouchListener;
 import com.mahao.customview.activitylife.LifeMainActivity;
@@ -19,17 +22,23 @@ import com.mahao.customview.drag.DragAdapter;
 import com.mahao.customview.drawable.DrawableActivity;
 import com.mahao.customview.fragment.MainFragmentActivity;
 import com.mahao.customview.fragment.viewpager2.TestViewPager2Activity;
+import com.mahao.customview.glide.GlideActivity;
+import com.mahao.customview.livedata.LiveDataActivity;
 import com.mahao.customview.multiwindow.ListActivity;
 import com.mahao.customview.okhttp.OkHttpActivity;
 import com.mahao.customview.recycler.RecyclerViewActivity;
 import com.mahao.customview.rxjava.RxjavaActivity;
+import com.mahao.customview.stackmanager.AActivity;
 import com.mahao.customview.view.TransLateActivity;
 import com.mahao.customview.view.ViewActivity;
 import com.mahao.customview.viewbind.ViewBindImplActivity;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -72,7 +81,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void jumpByPosition(int position) {
         if (position == 0) {
+
             goToActivity(CustomViewActivity.class);
+       /*     int i = checkOAIDPermission(this);
+            Log.d(TAG, "jumpByPosition: " + i);
+            try {
+                Class idProviderImplClass = Class.forName("com.android.id.impl.IdProviderImpl");
+                Method requestOAIDPermission = idProviderImplClass.getDeclaredMethod(
+                        "requestOAIDPermission", Activity.class, int.class);
+                requestOAIDPermission.invoke(null, this, 100);
+                Toast.makeText(this, "请求权限", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+            } catch (Throwable e) {
+            }*/
         } else if (position == 1) {
             goToActivity(ConstraintLayoutActivity.class);
         } else if (position == 2) {
@@ -90,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 7) {
             goToActivity(DispatchActivity.class);
         } else if (position == 8) {
+
             goToActivity(ListActivity.class);
         } else if (position == 9) {
             goToActivity(BinderActivity.class);
@@ -101,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
             goToActivity(LifeMainActivity.class);
         } else if (position == 13) {
             goToActivity(OkHttpActivity.class);
+        } else if (position == 14) {
+            goToActivity(GlideActivity.class);
+        } else if (position == 15) {
+            goToActivity(LiveDataActivity.class);
+        } else if (position == 16) {
+            goToActivity(AActivity.class);
         }
     }
 
@@ -121,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
         stringList.add("drawable");
         stringList.add("生命周期");
         stringList.add("okHttp");
+        stringList.add("glide");
+        stringList.add("liveData");
+        stringList.add("stackManager");
         return stringList;
     }
 
@@ -143,5 +174,25 @@ public class MainActivity extends AppCompatActivity {
         Rect rect1 = new Rect();
         view.getLocalVisibleRect(rect1); //返回可以见的大小，相对于父view
         Log.d(TAG, "onCreate: " + rect1.toShortString());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
+
+    }
+
+    public int checkOAIDPermission(Context context) {
+        int result = -2;
+        try {
+            Class idProviderImplClass = Class.forName("com.android.id.impl.IdProviderImpl");
+            Method checkSelfOAIDPermission = idProviderImplClass.getDeclaredMethod(
+                    "checkSelfOAIDPermission", Context.class);
+            result = (int) checkSelfOAIDPermission.invoke(null, context);
+        } catch (Exception e) {
+        } catch (Throwable e) {
+        }
+        return result;
     }
 }
